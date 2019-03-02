@@ -79,10 +79,8 @@ public class Data {
     public void addSword(String name, String culture, String shape) {
 
         try {
-
-            // will implement called functionality in a bit
             s = new Sword(name, culture, shape);
-            s = new Sword("Longsword", "European", "Straight");
+            //s = new Sword("Longsword", "European", "Straight");
             session = factory.openSession();
             session.beginTransaction();
             session.save(s);
@@ -95,6 +93,24 @@ public class Data {
         } finally {
             session.close();
         }
+    }
+    
+    public Sword getSwordByName(String name) {
+        try {
+            session = factory.openSession();
+            session.getTransaction().begin();
+            String sql = "from hibernatedemoworking.Sword where swordName=" + name;
+            Sword s = (Sword)session.createQuery(sql).uniqueResult();
+            session.getTransaction().commit();
+            return s;
 
+        } catch (Exception e) {
+            e.printStackTrace();
+            // Rollback in case of an error occurred.
+            session.getTransaction().rollback();
+            return null;
+        } finally {
+            session.close();
+        }
     }
 }
